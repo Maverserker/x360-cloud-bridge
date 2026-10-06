@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>X360 Cloud Bridge test</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { font: 14px/1.5 -apple-system, system-ui, sans-serif; max-width: 640px; margin: 24px auto; padding: 0 16px; }
+    pre { background: #8881; padding: 12px; border-radius: 6px; overflow-x: auto; }
+    button { font: inherit; padding: 6px 12px; }
+  </style>
+</head>
+<body>
+  <h1>X360 Cloud Bridge test page</h1>
+  <p>Serve this folder with <code>python3 -m http.server 8000</code> and open
+     <code>http://localhost:8000/gamepad-test.html</code> with the extension installed.</p>
+  <p><button id="rumble">Test rumble (1 s)</button></p>
+  <pre id="events">events: (none yet)</pre>
+  <pre id="out">waiting for navigator.getGamepads()…</pre>
+  <script>
+    const events = [];
+    const logEvent = (e) => {
+      events.push(`${e.type}: index ${e.gamepad.index} "${e.gamepad.id}"`);
+      document.getElementById('events').textContent = 'events:\n' + events.join('\n');
+    };
+    window.addEventListener('gamepadconnected', logEvent);
+    window.addEventListener('gamepaddisconnected', logEvent);
+
+    document.getElementById('rumble').onclick = () => {
+      const pad = navigator.getGamepads().find(Boolean);
+      pad?.vibrationActuator?.playEffect('dual-rumble', { duration: 1000, strongMagnitude: 1, weakMagnitude: 1 });
+    };
+
+    function frame() {
+      const pads = navigator.getGamepads().filter(Boolean).map((g) => ({
+        index: g.index,
+        id: g.id,
+        mapping: g.mapping,
+        instanceofGamepad: g instanceof Gamepad,
+        pressed: g.buttons.map((b, i) => (b.pressed ? i : null)).filter((i) => i !== null),
+        triggers: [g.buttons[6].value.toFixed(2), g.buttons[7].value.toFixed(2)],
+        axes: g.axes.map((a) => a.toFixed(2)),
+        rumble: !!g.vibrationActuator,
+      }));
+      document.getElementById('out').textContent = pads.length ? JSON.stringify(pads, null, 2) : 'no gamepads';
+      requestAnimationFrame(frame);
+    }
+    frame();
+  </script>
+</body>
+</html>

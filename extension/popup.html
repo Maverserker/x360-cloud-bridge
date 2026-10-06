@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    :root { color-scheme: light dark; --ok: #1a7f37; --bad: #b42318; --muted: #6b7280; }
+    body { font: 13px/1.4 -apple-system, system-ui, sans-serif; width: 280px; margin: 12px; }
+    h1 { font-size: 14px; margin: 0 0 8px; }
+    .row { display: flex; justify-content: space-between; padding: 3px 0; }
+    .ok { color: var(--ok); } .bad { color: var(--bad); } .muted { color: var(--muted); }
+    .pad { border-top: 1px solid #8884; margin-top: 6px; padding-top: 6px; }
+    .btns { font-family: ui-monospace, monospace; font-size: 12px; min-height: 1.4em; }
+    code { font-size: 11px; }
+  </style>
+</head>
+<body>
+  <h1>X360 Cloud Bridge</h1>
+  <div class="row"><span>Helper</span><span id="helper">…</span></div>
+  <div class="row"><span>Receiver</span><span id="receiver">…</span></div>
+  <div id="pads"></div>
+  <p id="hint" class="muted" hidden>
+    Start the helper: <code>./start.sh</code> in the project folder.
+  </p>
+  <script src="popup.js"></script>
+</body>
+</html>
